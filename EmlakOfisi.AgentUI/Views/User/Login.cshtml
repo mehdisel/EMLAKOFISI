@@ -1,0 +1,27 @@
+﻿@model UserSignInViewModel 
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src="~/img/team.png" id="icon" alt="User Icon" />
+        </div>
+        <!-- Login Form -->
+        <form asp-action="Login" method="post">
+            <input asp-for="@Model.UserName" id="login" class="fadeIn second" placeholder="Kullanıcı Adı"  />
+            <span asp-validation-for="@Model.UserName" class="text-danger" ></span>
+            <input asp-for="@Model.Password" id="password" class="fadeIn third"  placeholder="Şifre"/>
+            <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            <div class="text-danger" asp-validation-summary="ModelOnly">
+            </div>
+            <input type="submit" class="fadeIn fourth" id="loginu" value="Giriş Yap">
+        </form>
+
+
+    </div>
+</div>

@@ -1,0 +1,51 @@
+﻿@model EditRealEstateAdViewModel
+
+@{
+    ViewData["Title"] = "AddEstateAd";
+}
+
+<h1>İlan Düzenle</h1>
+<hr />
+<div class="row">
+    <partial name="_UserPanelSideBar" />
+    <div class="col-md-5">
+        <form asp-action="EditEstateAd" method="post" enctype="multipart/form-data">
+            <input asp-for="@Model.Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.AdName" class="control-label"></label>
+                <input asp-for="@Model.AdName" class="form-control" />
+                <span asp-validation-for="@Model.AdName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.SquareMeter" class="control-label"></label>
+                <input asp-for="@Model.SquareMeter" class="form-control" />
+                <span asp-validation-for="@Model.SquareMeter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.NumberOfRoomsId" class="control-label"></label>
+                <select asp-for="@Model.NumberOfRoomsId" class="form-control" asp-items="@Model.NumberOfRoomsItems"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.YearBuilt" class="control-label"></label>
+                <input asp-for="@Model.YearBuilt" class="form-control" />
+                <span asp-validation-for="@Model.YearBuilt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Price" class="control-label"></label>
+                <input asp-for="@Model.Price" class="form-control" />
+                <span asp-validation-for="@Model.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Image" class="control-label"></label>
+                <input asp-for="@Model.Image" class="form-control" type="file" accept="image/*" />
+                <span asp-validation-for="@Model.Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Güncelle" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+

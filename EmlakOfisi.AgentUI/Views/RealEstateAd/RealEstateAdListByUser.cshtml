@@ -1,0 +1,74 @@
+﻿@model List<RealEstateAdViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="row">
+    <partial name="_UserPanelSideBar" />
+    <div class="col-8 ml-3">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        İlan Resmi
+                    </th>
+                    <th>
+                        İlan Başlığı
+                    </th>
+                    <th>
+                        Oda Sayısı
+                    </th>
+                    <th>
+                        m²
+                    </th>
+                    <th>
+                        Konut Yaşı
+                    </th>
+                    <th>
+                        Fiyatı
+                    </th>
+                    <th>
+                        İlan Oluşturulma Tarihi
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ImagePath)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NumberOfRoom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SquareMeter)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.YearBuilt)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+
+                        <td>
+                            <a asp-action="EditEstateAd" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

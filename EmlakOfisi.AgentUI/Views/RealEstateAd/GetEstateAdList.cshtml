@@ -1,0 +1,195 @@
+﻿@model RealEstateAdFilterViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div class="row ">
+    <nav class="col-3 ">
+        <ul id="leftMenu" class="position-fixed col-3" style="margin-top:50px">
+            <li class="list-group-item">
+                <div data-role="rangeslider">
+                    <label for="minPrice">Fiyatı:</label>
+                    <input type="range" id="minPrice" min="@Model.Filters.MinPrice" max="@Model.Filters.MaxPrice" value="@Model.Filters.MinPrice" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                    <label for="maxPrice">Fiyatı:</label>
+                    <input type="range" id="maxPrice" min="@Model.Filters.MinPrice" max="@Model.Filters.MaxPrice" value="@Model.Filters.MaxPrice" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                </div>
+            </li>
+            <li class="list-group-item">
+                <label for="numberOfRooms">Oda Sayısı:</label>
+                <select id="numberOfRooms" class="filterPropDropDown">
+                    <option value="0">Seçiniz</option>
+                    @foreach (var item in Model.Filters.ExistingNumberOfRooms)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+
+                </select>
+            </li>
+            <li class="list-group-item">
+                <div data-role="rangeslider">
+                    <label for="minSquareMeter">m²:</label>
+                    <input type="range" id="minSquareMeter" min="@Model.Filters.MinSquareMeter" max="@Model.Filters.MaxSquareMeter" value="@Model.Filters.MinSquareMeter" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                    <label for="maxSquareMeter">m²:</label>
+                    <input type="range" id="maxSquareMeter" min="@Model.Filters.MinSquareMeter" max="@Model.Filters.MaxSquareMeter" value="@Model.Filters.MaxSquareMeter" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div data-role="rangeslider">
+                    <label for="minYearBuilt">Konut Yaşı:</label>
+                    <input type="range" id="minYearBuilt" min="@Model.Filters.MinYearBuilt" max="@Model.Filters.MaxYearBuilt" value="@Model.Filters.MinYearBuilt" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                    <label for="maxYearBuilt">Konut Yaşı:</label>
+                    <input type="range" id="maxYearBuilt" min="@Model.Filters.MinYearBuilt" max="@Model.Filters.MaxYearBuilt" value="@Model.Filters.MaxYearBuilt" data-popup-enabled="true" data-show-value="true" class="filterProp">
+                </div>
+            </li>
+
+
+        </ul>
+    </nav>
+    <div class="col-9">
+        <div class="row" id="estateAdList">
+
+            @foreach (var item in Model.Items)
+            {
+
+                <div class="col-md-3">
+                    <div class="card mb-4 shadow-sm">
+                        @if (item.ImagePath != null)
+                        {
+                            <img src="@(item.ImagePath.Contains("http://")?@item.ImagePath:"/img/"+item.ImagePath)" width="200" height="200" alt="Alternate Text" />
+                        }
+                        else
+                        {
+                            <img src="@string.Empty" width="200" height="200" alt="Alternate Text" />
+                        }
+
+                        <div class="card-body">
+                            <p class="card-text">@item.AdName</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <p href="#" class="btn btn-sm btn-outline-secondary">@item.Price.ToString("C")</p>
+                                    <p href="#" class="btn btn-sm btn-outline-secondary">@item.SquareMeter m²</p>
+                                    <p href="#" class="btn btn-sm btn-outline-secondary">@item.NumberOfRoom</p>
+                                </div>
+                                <small class="text-muted">@item.CreatedDate.ToShortDateString()</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script src="~/jquery-Mobile/jquery-1.11.1.min.js"></script>
+    <script src="~/jquery-Mobile/jquery.mobile-1.4.5.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var counter = 1;
+            $(".filterProp").slider({
+                start: function (event, ui) {
+                    // do something on mousedown on slider
+                },
+                stop: function (event, ui) {
+                    runAjax(getValues(0));
+                    counter = 1;
+                    resetPosition();
+                }
+
+            });
+
+            $('.filterPropDropDown').change(function () {
+                runAjax(getValues(0));
+                counter = 1;
+                resetPosition();
+            });
+
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    console.log(counter);
+                    runAjax(getValues(counter));
+                    counter++;
+                }
+            });
+
+
+        });
+        function resetPosition() {
+
+            $(window).scrollTop(0, 0);
+
+        }
+        function getValues(pageCounter) {
+            var postData = {
+                MinSquareMeter: parseInt($('#minSquareMeter').val()),
+                MaxSquareMeter: parseInt($('#maxSquareMeter').val()),
+                MinYearBuilt: parseInt($('#minYearBuilt').val()),
+                MaxYearBuilt: parseInt($('#maxYearBuilt').val()),
+                MinPrice: parseInt($('#minPrice').val()),
+                MaxPrice: parseInt($('#maxPrice').val()),
+                SelectedNumberOfRooms: parseInt($('#numberOfRooms option').filter(':selected').val()),
+                PageCounter: pageCounter
+            }
+
+            return postData;
+        }
+
+        function runAjax(postData) {
+            $.ajax({
+                type: "POST",
+                url: "/RealEstateAd/GetEstateAdList",
+                data: postData,
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                beforeSend: function () {
+                    $.mobile.loading("show");
+                },
+                success: function (result) {
+
+                    if (postData.PageCounter == 0) {
+                        $('#estateAdList').empty();
+
+                    }
+
+                    for (var i = 0; i < result.items.length; i++) {
+
+                        $('#estateAdList').append(`
+                                 <div class="col-md-3">
+                                    <div class="card mb-4 shadow-sm">
+                                        <img src="`+ result.items[i].imagePath + `" width="200" height="200" alt="Alternate Text" />
+
+                                        <div class="card-body">
+                                            <p class="card-text">`+ result.items[i].adName + `</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="btn-group">
+                                                    <p href="#" class="btn btn-sm btn-outline-secondary">`+ result.items[i].priceConverted + `</p>
+                                                    <p href="#" class="btn btn-sm btn-outline-secondary">`+ result.items[i].squareMeter + `m²</p>
+                                                    <p href="#" class="btn btn-sm btn-outline-secondary">`+ result.items[i].numberOfRoom + `</p>
+                                                </div>
+                                                <small class="text-muted">`+ result.items[i].createdDateConverted + `</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `);
+                    }
+
+                    
+                },
+                complete: function () {
+                    $.mobile.loading("hide");
+                }
+            });
+        }
+
+    </script>
+}
